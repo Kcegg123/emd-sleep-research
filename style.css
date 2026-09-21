@@ -592,6 +592,27 @@ input[type="range"]::-webkit-slider-thumb {
     margin-top: 12px;
 }
 
+/* IMF MAPPING */
+.imf-mapping {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 48px;
+    overflow-x: auto;
+}
+
+.imf-mapping h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.imf-mapping > p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
 /* HHT */
 .hht-section {
     margin-top: 48px;

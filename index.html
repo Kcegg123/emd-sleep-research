@@ -291,6 +291,52 @@
                 </div>
             </div>
 
+            <div class="imf-mapping">
+                <h3>IMF 與睡眠腦波頻帶對應</h3>
+                <p>當 EMD 應用於睡眠 EEG 訊號時，各 IMF 近似對應已知的腦波頻帶：</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IMF</th>
+                            <th>近似頻帶</th>
+                            <th>睡眠中的生理意義</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>IMF1</td>
+                            <td>Gamma (30-60 Hz)</td>
+                            <td>高頻皮質活動；在 REM 和清醒時出現，與認知處理和意識相關</td>
+                        </tr>
+                        <tr>
+                            <td>IMF2</td>
+                            <td>Beta (13-30 Hz)</td>
+                            <td>活躍清醒與淺睡；隨睡眠加深而減少，與覺醒程度相關</td>
+                        </tr>
+                        <tr>
+                            <td>IMF3</td>
+                            <td>Alpha (8-13 Hz)</td>
+                            <td>放鬆清醒（閉眼）；在入睡過渡期最為突出，用於標記入睡時間</td>
+                        </tr>
+                        <tr>
+                            <td>IMF4</td>
+                            <td>Theta (4-8 Hz)</td>
+                            <td class="highlight">N1/N2 睡眠主導；包含紡錘波成分 (11-16 Hz 與 IMF3 重疊)</td>
+                        </tr>
+                        <tr>
+                            <td>IMF5</td>
+                            <td>Delta (0.5-4 Hz)</td>
+                            <td class="highlight">N3 深睡主導；Delta 波振幅和存在是睡眠深度的主要指標</td>
+                        </tr>
+                        <tr>
+                            <td>IMF6+</td>
+                            <td>Sub-delta (&lt;0.5 Hz)</td>
+                            <td>超慢振盪；與睡眠週期 (ultradian rhythm) 相關</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div class="hht-section">
                 <h3>Hilbert-Huang Transform (HHT) 時頻分析</h3>
                 <p>EMD 分解後，對每個 IMF 進行 Hilbert 轉換，可得到瞬時頻率和瞬時振幅，繪製高解析度的時頻譜圖。</p>
@@ -346,12 +392,12 @@
                     </div>
                 </div>
                 <div class="paper">
-                    <span class="paper-year">2001</span>
+                    <span class="paper-year">2006</span>
                     <div class="paper-info">
-                        <h4>Automatic sleep staging and classification of sleep EEG signals using EMD</h4>
-                        <p class="paper-authors">Agarwal, R., & Gotman, J.</p>
-                        <p class="paper-journal">Journal of Clinical Neurophysiology, 18(4), 357-367</p>
-                        <span class="paper-tag">睡眠分期</span>
+                        <h4>Detection of Spindles in Sleep EEGs Using a Novel Algorithm Based on the Hilbert-Huang Transform</h4>
+                        <p class="paper-authors">Causa, L., Held, C. M., Estévez, J., Perez, C. A., et al.</p>
+                        <p class="paper-journal">Analysis of Biomedical Signals and Images, Springer, 478-482</p>
+                        <span class="paper-tag">紡錘波偵測</span>
                     </div>
                 </div>
                 <div class="paper">
@@ -373,21 +419,21 @@
                     </div>
                 </div>
                 <div class="paper">
-                    <span class="paper-year">2012</span>
+                    <span class="paper-year">2009</span>
                     <div class="paper-info">
-                        <h4>Automatic sleep spindle detection using EMD and instantaneous frequency</h4>
-                        <p class="paper-authors">Liang, S. F., Kuo, C. E., Hu, Y. H., Pan, Y. H., & Wang, Y. H.</p>
-                        <p class="paper-journal">Journal of Neuroscience Methods, 207(1), 46-56</p>
-                        <span class="paper-tag">紡錘波偵測</span>
+                        <h4>Sleep stage classification based on EEG Hilbert-Huang transform</h4>
+                        <p class="paper-authors">Li, Y., Yingle, F., Gu, L., & Qinye, T.</p>
+                        <p class="paper-journal">4th IEEE Conference on Industrial Electronics and Applications (ICIEA), 3676-3681</p>
+                        <span class="paper-tag">睡眠分期</span>
                     </div>
                 </div>
                 <div class="paper">
-                    <span class="paper-year">2012</span>
+                    <span class="paper-year">2015</span>
                     <div class="paper-info">
-                        <h4>EEG signal classification using empirical mode decomposition and support vector machine</h4>
-                        <p class="paper-authors">Bajaj, V., & Pachori, R. B.</p>
-                        <p class="paper-journal">Lecture Notes in Computer Science, 7403, 623-630</p>
-                        <span class="paper-tag">機器學習</span>
+                        <h4>Empirical Mode Decomposition analysis of Sleep EEG: Examining the microstructure of transient oscillatory events</h4>
+                        <p class="paper-authors">Lajnef, T., Chaibi, S., Eichenlaub, J.-B., Ruby, P. M., et al.</p>
+                        <p class="paper-journal">Conference Paper / Preprint</p>
+                        <span class="paper-tag">微結構分析</span>
                     </div>
                 </div>
                 <div class="paper">
