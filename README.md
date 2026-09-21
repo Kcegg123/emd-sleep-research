@@ -36,12 +36,14 @@ Settings → Pages → 選擇 `main` branch。
 
 ## 主要參考文獻
 
-- Huang, N. E. et al. (1998). *Proc. R. Soc. Lond. A*, 454, 903–995 — EMD/HHT 奠基論文
-- Causa, L. et al. (2006). Detection of spindles in sleep EEGs using HHT
-- Wu, Z. & Huang, N. E. (2009). Ensemble EMD
-- Li, Y. et al. (2009). Sleep stage classification based on EEG HHT
-- Lajnef, T. et al. (2015). EMD analysis of sleep EEG microstructure
-- Lo, C.-C., Bartsch, R. P. & Ivanov, P. Ch. (2018). *Front. Neurosci.*, 12, 809
-- Kumar, G. et al. (2024). Automated spindle detection with TEO + EMD
+網站上每張文獻卡片都連到 DOI 頁面。
+
+- Huang, N. E. et al. (1998). *Proc. R. Soc. Lond. A*, 454, 903–995 — EMD/HHT 奠基論文 — doi:10.1098/rspa.1998.0193
+- Wu, Z. & Huang, N. E. (2009). Ensemble EMD — doi:10.1142/S1793536909000047
+- Huang, N. E. et al. (2009). On instantaneous frequency — doi:10.1142/S1793536909000096
+- Li, Y. et al. (2009). Sleep stage classification based on EEG HHT (ICIEA) — doi:10.1109/ICIEA.2009.5138842
+- Causa, L. et al. (2010). Automated sleep-spindle detection in healthy children polysomnograms. *IEEE TBME* — doi:10.1109/TBME.2010.2052924
+- Hou, F. et al. (2018). Complexity of wake EEG correlates with SWA after sleep onset. *Front. Neurosci.*, 12, 809 — doi:10.3389/fnins.2018.00809
+- Li, Song, Zhang & Karray (2024). Automated spindle detection with TEO + EMD. *Expert Syst. Appl.* — doi:10.1016/j.eswa.2024.123661
 
 K Lab · 陽明交通大學 · 2026

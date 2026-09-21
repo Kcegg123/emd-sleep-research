@@ -176,9 +176,12 @@
         document.documentElement.style.setProperty('--stage-hue', sp.hue.toFixed(1));
         const st = DSP.STAGES[Math.round(p * (DSP.STAGES.length - 1))];
         stageBadge.querySelector('.stage-badge-text').textContent = `${st.en} · ${st.name}`;
-        const mins = 23 * 60 + p * 8 * 60;
-        const hh = Math.floor(mins / 60) % 24, mm = Math.floor(mins % 60);
+        const elapsed = Math.round(p * 8 * 60);
+        const mins = 23 * 60 + elapsed;
+        const hh = Math.floor(mins / 60) % 24, mm = mins % 60;
         $('#journey-clock').textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+        $('#journey-elapsed').textContent = elapsed < 5 ? '躺下，尚未入睡' : `入睡後 ${Math.floor(elapsed / 60)} 小時 ${String(elapsed % 60).padStart(2, '0')} 分`;
+        $('#journey-stage-name').textContent = `${st.en} · ${st.name}`;
     }
     new IntersectionObserver(([e]) => stageBadge.classList.toggle('on', e.isIntersecting), { threshold: 0.05 }).observe(journeySec);
 
@@ -552,10 +555,11 @@
 
     // ---------- timeline drag ----------
     const tl = $('#timeline');
-    let drag = null;
-    tl.addEventListener('pointerdown', e => { drag = { x: e.clientX, sl: tl.scrollLeft }; tl.style.scrollSnapType = 'none'; });
-    addEventListener('pointermove', e => { if (drag) tl.scrollLeft = drag.sl - (e.clientX - drag.x); });
+    let drag = null, dragged = false;
+    tl.addEventListener('pointerdown', e => { drag = { x: e.clientX, sl: tl.scrollLeft }; dragged = false; tl.style.scrollSnapType = 'none'; });
+    addEventListener('pointermove', e => { if (drag) { tl.scrollLeft = drag.sl - (e.clientX - drag.x); if (Math.abs(e.clientX - drag.x) > 6) dragged = true; } });
     addEventListener('pointerup', () => { drag = null; tl.style.scrollSnapType = ''; });
+    tl.addEventListener('click', e => { if (dragged) { e.preventDefault(); dragged = false; } }, true);
 
     // ---------- reveals ----------
     const heroStart = performance.now();

@@ -70,7 +70,11 @@
         <div class="journey-stage">
             <canvas id="journey-canvas"></canvas>
             <div class="journey-overlay">
-                <div class="journey-time mono"><span id="journey-clock">23:00</span></div>
+                <div class="journey-time">
+                    <span class="journey-time-k mono">模擬時間 · 向下捲動 = 時間前進</span>
+                    <span class="journey-clock mono" id="journey-clock">23:00</span>
+                    <span class="journey-time-v mono"><span id="journey-elapsed">尚未入睡</span><span class="journey-time-sep">·</span><span id="journey-stage-name">清醒</span></span>
+                </div>
                 <div class="journey-note mono">模擬訊號 · 依各睡眠階段的<br>頻譜特徵合成，非真實病人資料</div>
                 <div class="hypnogram" id="hypnogram">
                     <canvas id="hypno-canvas"></canvas>
@@ -100,7 +104,7 @@
                     <span class="chapter-idx mono">03 / N2</span>
                     <h2>紡錘與 K 複合波</h2>
                     <p>每隔幾秒，一串 <b>12–14 Hz 的紡錘波</b>閃過，還有一記深沉的 <b>K 複合波</b>。它們只持續 0.5–2 秒——是瞬態，不是「頻帶」。</p>
-                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>紡錘波被單獨隔離在一個 IMF，用 Hilbert 瞬時頻率能精確標出起訖時間 (Causa et al., 2006)。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>紡錘波被單獨隔離在一個 IMF，用 Hilbert 瞬時頻率能精確標出起訖時間 (Causa et al., 2010)。</p>
                 </div>
             </article>
             <article class="chapter" data-stage="3">
@@ -108,7 +112,7 @@
                     <span class="chapter-idx mono">04 / N3</span>
                     <h2>慢波深海</h2>
                     <p>高振幅 <b>Delta (0.5–4 Hz)</b> 佔據一切。這是身體修復、記憶固化的時段；慢波活動 (SWA) 是「睡眠深度」的黃金指標。</p>
-                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>EEMD 量測的 SWA 比固定頻帶的 FFT 功率譜更靈敏 (Lo, Bartsch & Ivanov, 2018)。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>EEMD 量測的 SWA 比固定頻帶的 FFT 功率譜更靈敏 (Hou et al., 2018)。</p>
                 </div>
             </article>
             <article class="chapter" data-stage="4">
@@ -291,65 +295,72 @@
         <div class="wrap">
             <p class="eyebrow"><span class="eyebrow-line"></span>References</p>
             <h2 class="h2">文獻時間線</h2>
-            <p class="lead">從 1998 年的奠基論文到今日的自動偵測。橫向捲動。</p>
+            <p class="lead">從 1998 年的奠基論文到今日的自動偵測。橫向捲動，點擊卡片開啟論文頁面（DOI）。</p>
         </div>
         <div class="timeline" id="timeline">
-            <article class="glass paper">
+            <a class="glass paper" href="https://doi.org/10.1098/rspa.1998.0193" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
                 <span class="paper-year mono">1998</span>
                 <h3>The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis</h3>
                 <p class="paper-auth">Huang, N. E., Shen, Z., Long, S. R., Wu, M. C., Shih, H. H., Zheng, Q., Yen, N.-C., Tung, C. C., & Liu, H. H.</p>
                 <p class="paper-j">Proc. R. Soc. Lond. A, 454(1971), 903–995</p>
                 <span class="tag">奠基論文</span>
-            </article>
-            <article class="glass paper">
-                <span class="paper-year mono">2006</span>
-                <h3>Detection of Spindles in Sleep EEGs Using a Novel Algorithm Based on the Hilbert-Huang Transform</h3>
-                <p class="paper-auth">Causa, L., Held, C. M., Estévez, J., Perez, C. A., et al.</p>
-                <p class="paper-j">Analysis of Biomedical Signals and Images, Springer, 478–482</p>
-                <span class="tag">紡錘波偵測</span>
-            </article>
-            <article class="glass paper">
+                <span class="paper-src">doi.org/10.1098/rspa.1998.0193</span>
+            </a>
+            <a class="glass paper" href="https://doi.org/10.1142/S1793536909000047" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
                 <span class="paper-year mono">2009</span>
                 <h3>Ensemble Empirical Mode Decomposition: A Noise-Assisted Data Analysis Method</h3>
                 <p class="paper-auth">Wu, Z., & Huang, N. E.</p>
                 <p class="paper-j">Advances in Adaptive Data Analysis, 1(1), 1–41</p>
                 <span class="tag">EEMD</span>
-            </article>
-            <article class="glass paper">
-                <span class="paper-year mono">2009</span>
-                <h3>Sleep stage classification based on EEG Hilbert-Huang transform</h3>
-                <p class="paper-auth">Li, Y., Yingle, F., Gu, L., & Qinye, T.</p>
-                <p class="paper-j">4th IEEE Conf. Industrial Electronics and Applications, 3676–3681</p>
-                <span class="tag">睡眠分期 · 81.7%</span>
-            </article>
-            <article class="glass paper">
+                <span class="paper-src">doi.org/10.1142/S1793536909000047</span>
+            </a>
+            <a class="glass paper" href="https://doi.org/10.1142/S1793536909000096" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
                 <span class="paper-year mono">2009</span>
                 <h3>On instantaneous frequency</h3>
                 <p class="paper-auth">Huang, N. E., Wu, Z., Long, S. R., Arnold, K. C., Chen, X., & Blank, K.</p>
                 <p class="paper-j">Advances in Adaptive Data Analysis, 1(2), 177–229</p>
                 <span class="tag">理論基礎</span>
-            </article>
-            <article class="glass paper">
-                <span class="paper-year mono">2015</span>
-                <h3>Empirical Mode Decomposition analysis of Sleep EEG: Examining the microstructure of transient oscillatory events</h3>
-                <p class="paper-auth">Lajnef, T., Chaibi, S., Eichenlaub, J.-B., Ruby, P. M., et al.</p>
-                <p class="paper-j">Conference paper / preprint</p>
-                <span class="tag">微結構</span>
-            </article>
-            <article class="glass paper">
+                <span class="paper-src">doi.org/10.1142/S1793536909000096</span>
+            </a>
+            <a class="glass paper" href="https://doi.org/10.1109/ICIEA.2009.5138842" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
+                <span class="paper-year mono">2009</span>
+                <h3>Sleep stage classification based on EEG Hilbert-Huang transform</h3>
+                <p class="paper-auth">Li, Y., Yingle, F., Gu, L., & Qinye, T.</p>
+                <p class="paper-j">4th IEEE Conf. Industrial Electronics and Applications (ICIEA), 3676–3681</p>
+                <span class="tag">睡眠分期 · 81.7%</span>
+                <span class="paper-src">doi.org/10.1109/ICIEA.2009.5138842</span>
+            </a>
+            <a class="glass paper" href="https://doi.org/10.1109/TBME.2010.2052924" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
+                <span class="paper-year mono">2010</span>
+                <h3>Automated sleep-spindle detection in healthy children polysomnograms</h3>
+                <p class="paper-auth">Causa, L., Held, C. M., Causa, J., Estévez, P. A., Perez, C. A., Chamorro, R., Garrido, M., Algarín, C., & Peirano, P.</p>
+                <p class="paper-j">IEEE Transactions on Biomedical Engineering, 57(9), 2135–2146</p>
+                <span class="tag">紡錘波偵測 · HHT</span>
+                <span class="paper-src">doi.org/10.1109/TBME.2010.2052924</span>
+            </a>
+            <a class="glass paper" href="https://doi.org/10.3389/fnins.2018.00809" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
                 <span class="paper-year mono">2018</span>
                 <h3>Complexity of Wake Electroencephalography Correlates With Slow Wave Activity After Sleep Onset</h3>
-                <p class="paper-auth">Lo, C.-C., Bartsch, R. P., & Ivanov, P. Ch.</p>
+                <p class="paper-auth">Hou, F., Yu, Z., Peng, C.-K., Yang, A., Wu, C., & Ma, Y.</p>
                 <p class="paper-j">Frontiers in Neuroscience, 12, 809</p>
                 <span class="tag">EEMD · 慢波</span>
-            </article>
-            <article class="glass paper">
+                <span class="paper-src">doi.org/10.3389/fnins.2018.00809</span>
+            </a>
+            <a class="glass paper" href="https://doi.org/10.1016/j.eswa.2024.123661" target="_blank" rel="noopener">
+                <span class="paper-open">開啟論文 ↗</span>
                 <span class="paper-year mono">2024</span>
-                <h3>Automated detection of sleep spindles using a single EEG channel based TEO and EMD</h3>
-                <p class="paper-auth">Kumar, G., Rathore, S. S., & Sahoo, B.</p>
+                <h3>Automated detection of sleep spindles using a single EEG channel based on TEO and EMD</h3>
+                <p class="paper-auth">Li, Song, Zhang, & Karray</p>
                 <p class="paper-j">Expert Systems with Applications, 123661</p>
                 <span class="tag">單通道 · 自動化</span>
-            </article>
+                <span class="paper-src">doi.org/10.1016/j.eswa.2024.123661</span>
+            </a>
         </div>
     </section>
 
