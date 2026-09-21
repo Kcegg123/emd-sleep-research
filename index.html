@@ -6,6 +6,11 @@
     <meta name="theme-color" content="#05060a">
     <title>一夜之旅 — EMD 與睡眠腦波</title>
     <meta name="description" content="捲動穿越一整夜的睡眠，看見黃鍔院士的經驗模態分解 (EMD) 如何拆解腦波、聽見每一個 IMF。">
+    <meta property="og:title" content="一夜之旅 — EMD 與睡眠腦波">
+    <meta property="og:description" content="捲動穿越一整夜的睡眠，看見經驗模態分解 (EMD) 如何拆解腦波、聽見每一個 IMF。">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305060a'/%3E%3Cpath d='M6 34 L14 34 L18 22 L24 44 L30 26 L34 40 L38 30 L42 36 L48 34 L58 34' fill='none' stroke='%2333e1ff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <script>try{var t=localStorage.getItem('emd-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cyber.css">
@@ -30,8 +35,9 @@
             <a href="#lab" data-magnetic>實驗室</a>
             <a href="#hht3d" data-magnetic>3D</a>
             <a href="#papers" data-magnetic>文獻</a>
+            <a href="#about" data-magnetic>關於</a>
         </nav>
-        <a href="classic.html" class="topbar-link" data-magnetic>經典版 ↗</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" data-magnetic aria-label="切換日間／夜間模式" aria-pressed="false"><span class="tt-icon">☾</span><span class="tt-text">夜間</span></button>
     </header>
 
     <div class="stage-badge" id="stage-badge" aria-live="polite">
@@ -65,6 +71,7 @@
             <canvas id="journey-canvas"></canvas>
             <div class="journey-overlay">
                 <div class="journey-time mono"><span id="journey-clock">23:00</span></div>
+                <div class="journey-note mono">模擬訊號 · 依各睡眠階段的<br>頻譜特徵合成，非真實病人資料</div>
                 <div class="hypnogram" id="hypnogram">
                     <canvas id="hypno-canvas"></canvas>
                     <div class="hypno-labels mono"><span>23:00</span><span>01:00</span><span>03:00</span><span>05:00</span><span>07:00</span></div>
@@ -250,6 +257,35 @@
         </div>
     </section>
 
+    <!-- LIMITS -->
+    <section id="limits" class="section">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>Limits & Beyond</p>
+            <h2 class="h2">EMD 的限制，以及它怎麼被修好</h2>
+            <p class="lead">EMD 是經驗方法，沒有封閉的數學式。強大，但也帶著三個大家都會踩到的坑——黃鍔團隊後續的工作幾乎都在補這些洞。</p>
+        </div>
+        <div class="wrap limits">
+            <div class="glass limit">
+                <span class="limit-k">01 · MODE MIXING</span>
+                <b>模態混疊</b>
+                <p>頻率相近或間歇出現的成分（例如只在 N2 出現的紡錘波）可能被拆到同一個 IMF，或一個成分跨兩個 IMF。你在實驗室裡把雜訊調大就會看到。</p>
+                <p class="fix"><b>EEMD</b>加入多組白雜訊、各做一次 EMD 再取平均，雜訊互相抵消、模態被逼回正確的尺度 (Wu &amp; Huang, 2009)。</p>
+            </div>
+            <div class="glass limit">
+                <span class="limit-k">02 · END EFFECTS</span>
+                <b>端點效應</b>
+                <p>樣條包絡在訊號兩端沒有極值可依靠，會亂飄，誤差往內傳播。篩選動畫裡兩端的包絡線常常是最不像樣的地方。</p>
+                <p class="fix"><b>鏡射延拓</b>把訊號兩端做鏡像延伸再分解，或以極值外推補點；睡眠分析中通常直接丟棄每段前後幾秒。</p>
+            </div>
+            <div class="glass limit">
+                <span class="limit-k">03 · STOPPING</span>
+                <b>停止準則與計算量</b>
+                <p>篩多少次才算 IMF？篩太少均值不為零，篩太多會把振幅調變抹平、失去物理意義。經典做法是 Cauchy 型 SD 準則（SD &lt; 0.2–0.3）。</p>
+                <p class="fix"><b>Holo-Hilbert 譜分析</b>對 IMF 的振幅包絡再做一層 EMD，把「調幅」本身當成訊號，揭露跨頻率的耦合 (Huang et al., 2016)。</p>
+            </div>
+        </div>
+    </section>
+
     <!-- PAPERS -->
     <section id="papers" class="section section-dark">
         <div class="wrap">
@@ -317,14 +353,35 @@
         </div>
     </section>
 
+    <!-- ABOUT -->
+    <section id="about" class="section">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>Norden E. Huang</p>
+            <h2 class="h2">關於黃鍔院士</h2>
+        </div>
+        <div class="wrap about">
+            <div class="glass about-text">
+                <p>黃鍔 (Norden E. Huang) 是 Hilbert–Huang Transform 與經驗模態分解的發明者。1998 年，他在 NASA Goddard 太空飛行中心研究海洋波浪時，發現傅立葉分析對非線性、非穩態訊號的根本限制，於是提出一種不預設任何基底函數、完全由資料自身決定分解方式的方法——這就是 EMD。</p>
+                <p>這篇發表於《Proceedings of the Royal Society A》的論文，如今已是非線性時間序列分析領域被引用最多的文獻之一。方法從海洋學出發，擴散到地震學、結構健康監測、金融、氣候，以及生醫訊號——其中睡眠腦波正是它最自然的舞台，因為腦的節律從來不穩態。</p>
+                <p>返台後，他在國立中央大學創立數據分析方法研究中心，持續推動 EEMD、瞬時頻率理論與 Holo-Hilbert 譜分析等後續發展。</p>
+            </div>
+            <div class="about-facts">
+                <div class="glass fact"><span class="fact-k">1998</span><span class="fact-v"><b>EMD / HHT 奠基論文</b>Proc. R. Soc. Lond. A, 454, 903–995</span></div>
+                <div class="glass fact"><span class="fact-k">NASA</span><span class="fact-v"><b>Goddard 太空飛行中心</b>HHT 於此誕生，最初用於海洋波浪分析</span></div>
+                <div class="glass fact"><span class="fact-k">NAE</span><span class="fact-v"><b>美國國家工程院院士</b>亦為中央研究院院士</span></div>
+                <div class="glass fact"><span class="fact-k">NCU</span><span class="fact-v"><b>中央大學數據分析方法研究中心</b>創辦人，推動 EEMD 與 Holo-Hilbert 譜分析</span></div>
+            </div>
+        </div>
+    </section>
+
     <footer class="footer">
         <div class="wrap footer-inner">
             <div>
                 <p class="footer-title">一夜之旅 · EMD × Sleep</p>
                 <p class="footer-sub">黃鍔院士演講延伸 · K Lab · 陽明交通大學 · 2026</p>
+                <p class="footer-sub">本站所有腦波皆為依睡眠階段頻譜特徵合成的模擬訊號，僅供教學演示。</p>
             </div>
             <div class="footer-links">
-                <a href="classic.html" data-magnetic>經典版網站</a>
                 <a href="https://github.com/Kcegg123/emd-sleep-research" target="_blank" rel="noopener" data-magnetic>GitHub ↗</a>
             </div>
         </div>

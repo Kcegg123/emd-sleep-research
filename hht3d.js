@@ -26,7 +26,8 @@ function init() {
     controls.maxPolarAngle = Math.PI / 2.05;
     controls.target.set(0, 0.8, 0);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+    const amb = new THREE.AmbientLight(0xffffff, 1.1);
+    scene.add(amb);
     const key = new THREE.DirectionalLight(0x99eeff, 1.2);
     key.position.set(5, 10, 6);
     scene.add(key);
@@ -34,9 +35,15 @@ function init() {
     rim.position.set(-8, 4, -6);
     scene.add(rim);
 
-    const grid = new THREE.GridHelper(Math.max(W, D) * 1.4, 28, 0x1b2233, 0x121826);
-    grid.position.y = -0.01;
-    scene.add(grid);
+    let grid = null;
+    function makeGrid(dark) {
+        if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+        grid = dark ? new THREE.GridHelper(Math.max(W, D) * 1.4, 28, 0x1b2233, 0x121826)
+                    : new THREE.GridHelper(Math.max(W, D) * 1.4, 28, 0xc7cfdd, 0xdde3ec);
+        grid.position.y = -0.01;
+        scene.add(grid);
+    }
+    makeGrid(true);
 
     const geo = new THREE.PlaneGeometry(W, D, TB - 1, FB - 1);
     geo.rotateX(-Math.PI / 2);
@@ -175,4 +182,23 @@ function init() {
 
     setScene('transition');
     frame();
+
+    window.HHT3D = {
+        setTheme(dark) {
+            scene.fog.color.set(dark ? 0x05060a : 0xf6f7fb);
+            scene.fog.density = dark ? 0.045 : 0.016;
+            amb.intensity = dark ? 1.1 : 0.7;
+            key.intensity = dark ? 1.2 : 0.6;
+            key.color.set(dark ? 0x99eeff : 0xffffff);
+            cLo.set(dark ? 0x16305c : 0xcfe4f7);
+            cMid.set(dark ? 0x33e1ff : 0x0e7490);
+            cHi.set(dark ? 0xffffff : 0x1e1b4b);
+            wire.material.color.set(dark ? 0x33e1ff : 0x0e7490);
+            wire.material.opacity = dark ? 0.08 : 0.14;
+            rim.intensity = dark ? 30 : 8;
+            makeGrid(dark);
+            dirty = true;
+        }
+    };
+    dispatchEvent(new Event('hht3d-ready'));
 }
