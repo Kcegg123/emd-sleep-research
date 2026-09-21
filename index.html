@@ -3,482 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMD 與睡眠研究 — 經驗模態分解互動演示</title>
+    <meta name="theme-color" content="#05060a">
+    <title>一夜之旅 — EMD 與睡眠腦波</title>
+    <meta name="description" content="捲動穿越一整夜的睡眠，看見黃鍔院士的經驗模態分解 (EMD) 如何拆解腦波、聽見每一個 IMF。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cyber.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+    </script>
 </head>
 <body>
-    <nav id="navbar">
-        <div class="nav-inner">
-            <a href="#hero" class="nav-logo">EMD × Sleep</a>
-            <div class="nav-links">
-                <a href="#intro">簡介</a>
-                <a href="#algorithm">演算法</a>
-                <a href="#demo">互動演示</a>
-                <a href="#sleep">睡眠應用</a>
-                <a href="#papers">文獻</a>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"><div class="cursor-dot"></div><div class="cursor-ring"></div></div>
+
+    <header class="topbar">
+        <a href="#top" class="brand" data-magnetic><span class="brand-pulse"></span>EMD<span class="brand-x">×</span>SLEEP</a>
+        <nav class="topnav">
+            <a href="#journey" data-magnetic>一夜</a>
+            <a href="#fourier" data-magnetic>盲點</a>
+            <a href="#sifting" data-magnetic>篩選</a>
+            <a href="#lab" data-magnetic>實驗室</a>
+            <a href="#hht3d" data-magnetic>3D</a>
+            <a href="#papers" data-magnetic>文獻</a>
+        </nav>
+        <a href="classic.html" class="topbar-link" data-magnetic>經典版 ↗</a>
+    </header>
+
+    <div class="stage-badge" id="stage-badge" aria-live="polite">
+        <span class="stage-badge-dot"></span>
+        <span class="stage-badge-text">Wake</span>
+    </div>
+
+    <!-- HERO -->
+    <section id="top" class="hero">
+        <canvas id="hero-canvas" class="hero-canvas"></canvas>
+        <div class="hero-inner">
+            <p class="eyebrow"><span class="eyebrow-line"></span>黃鍔院士 · Empirical Mode Decomposition</p>
+            <h1 class="hero-title">
+                <span class="hero-title-line">一夜</span>
+                <span class="hero-title-line hero-title-accent">之旅</span>
+            </h1>
+            <p class="hero-sub">你的腦一整晚都在說話。<br>傅立葉聽不懂它的口音——EMD 可以。</p>
+            <div class="hero-cta">
+                <a href="#journey" class="btn btn-glow" data-magnetic>向下捲動，進入睡眠</a>
+                <span class="hero-hint"><span class="hero-hint-mouse"></span>Scroll</span>
             </div>
-            <button id="theme-toggle" aria-label="Toggle theme">◐</button>
         </div>
-    </nav>
-
-    <section id="hero">
-        <div class="hero-bg"></div>
-        <div class="container hero-content">
-            <p class="hero-tag">黃鍔院士 · Hilbert-Huang Transform</p>
-            <h1>經驗模態分解<br><span class="accent">與睡眠腦波研究</span></h1>
-            <p class="hero-sub">Empirical Mode Decomposition (EMD) 是一種自適應信號分解方法，<br>特別適用於分析非線性、非穩態的睡眠腦電圖 (EEG) 訊號。</p>
-            <a href="#demo" class="btn-primary">開始互動演示 →</a>
-        </div>
-    </section>
-
-    <section id="intro" class="section">
-        <div class="container">
-            <h2 class="section-title">為什麼需要 EMD？</h2>
-            <div class="grid-3">
-                <div class="card">
-                    <div class="card-icon">🧠</div>
-                    <h3>腦波的本質</h3>
-                    <p>睡眠 EEG 訊號本質上是<strong>非線性、非穩態</strong>的。傳統傅立葉分析假設信號為穩態，無法準確捕捉睡眠中瞬時變化的頻率特徵。</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">📊</div>
-                    <h3>傅立葉的限制</h3>
-                    <p>短時傅立葉轉換 (STFT) 受限於<strong>時頻不確定性原理</strong>——無法同時獲得高時間解析度與高頻率解析度，難以分析快速變化的睡眠紡錘波。</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">✨</div>
-                    <h3>EMD 的優勢</h3>
-                    <p>EMD 是<strong>數據驅動</strong>的自適應方法，不需預設基底函數，能自動從信號中提取出各個<strong>固有模態函數 (IMF)</strong>，完美適應非穩態信號。</p>
-                </div>
-            </div>
-
-            <div class="comparison-table">
-                <h3>方法比較</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>特性</th>
-                            <th>傅立葉轉換 (FFT)</th>
-                            <th>小波轉換 (WT)</th>
-                            <th>EMD / HHT</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>基底函數</td>
-                            <td>固定（正弦/餘弦）</td>
-                            <td>預定義小波</td>
-                            <td class="highlight">自適應（數據驅動）</td>
-                        </tr>
-                        <tr>
-                            <td>非線性訊號</td>
-                            <td>不適用</td>
-                            <td>部分適用</td>
-                            <td class="highlight">完全適用</td>
-                        </tr>
-                        <tr>
-                            <td>非穩態訊號</td>
-                            <td>不適用</td>
-                            <td>適用</td>
-                            <td class="highlight">完全適用</td>
-                        </tr>
-                        <tr>
-                            <td>時頻解析度</td>
-                            <td>僅頻率</td>
-                            <td>固定比例</td>
-                            <td class="highlight">自適應最佳化</td>
-                        </tr>
-                        <tr>
-                            <td>瞬時頻率</td>
-                            <td>無法計算</td>
-                            <td>近似</td>
-                            <td class="highlight">精確（Hilbert 轉換）</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="hero-meta mono">
+            <span>fs = 128 Hz</span><span>N = 1024</span><span>IMF × 6</span>
         </div>
     </section>
 
-    <section id="algorithm" class="section section-alt">
-        <div class="container">
-            <h2 class="section-title">EMD 演算法步驟</h2>
-            <p class="section-desc">EMD 透過「篩選過程」(Sifting Process) 將信號逐步分解為一系列固有模態函數 (Intrinsic Mode Functions, IMFs)。</p>
-
-            <div class="algorithm-steps">
-                <div class="step" data-step="1">
-                    <div class="step-num">01</div>
-                    <div class="step-content">
-                        <h3>辨識極值點</h3>
-                        <p>找出信號 x(t) 的所有<strong>局部極大值</strong>和<strong>局部極小值</strong>。</p>
-                    </div>
-                </div>
-                <div class="step" data-step="2">
-                    <div class="step-num">02</div>
-                    <div class="step-content">
-                        <h3>建構包絡線</h3>
-                        <p>使用三次樣條內插 (Cubic Spline) 連接所有極大值得到<strong>上包絡線</strong>，連接所有極小值得到<strong>下包絡線</strong>。</p>
-                    </div>
-                </div>
-                <div class="step" data-step="3">
-                    <div class="step-num">03</div>
-                    <div class="step-content">
-                        <h3>計算均值包絡</h3>
-                        <p>計算上下包絡線的<strong>平均值 m(t)</strong>：m(t) = [上包絡線 + 下包絡線] / 2</p>
-                    </div>
-                </div>
-                <div class="step" data-step="4">
-                    <div class="step-num">04</div>
-                    <div class="step-content">
-                        <h3>提取細節</h3>
-                        <p>從原始信號中減去均值包絡，得到候選 IMF：<strong>h(t) = x(t) − m(t)</strong></p>
-                    </div>
-                </div>
-                <div class="step" data-step="5">
-                    <div class="step-num">05</div>
-                    <div class="step-content">
-                        <h3>檢查 IMF 條件</h3>
-                        <p>若 h(t) 滿足 IMF 條件（極值數與零交叉數差≤1，均值包絡趨近零），則 h(t) 為一個 IMF；否則以 h(t) 取代 x(t) 重複步驟 1-4。</p>
-                    </div>
-                </div>
-                <div class="step" data-step="6">
-                    <div class="step-num">06</div>
-                    <div class="step-content">
-                        <h3>提取殘餘量並重複</h3>
-                        <p>將提取出的 IMF 從信號中減去，得到殘餘量 <strong>r(t) = x(t) − IMF₁(t)</strong>，以 r(t) 作為新信號重複整個過程，直到殘餘量為單調函數。</p>
-                    </div>
+    <!-- JOURNEY -->
+    <section id="journey" class="journey">
+        <div class="journey-stage">
+            <canvas id="journey-canvas"></canvas>
+            <div class="journey-overlay">
+                <div class="journey-time mono"><span id="journey-clock">23:00</span></div>
+                <div class="hypnogram" id="hypnogram">
+                    <canvas id="hypno-canvas"></canvas>
+                    <div class="hypno-labels mono"><span>23:00</span><span>01:00</span><span>03:00</span><span>05:00</span><span>07:00</span></div>
                 </div>
             </div>
-
-            <div class="formula-box">
-                <h3>最終分解結果</h3>
-                <div class="formula">
-                    x(t) = Σᵢ₌₁ⁿ IMFᵢ(t) + rₙ(t)
+        </div>
+        <div class="chapters">
+            <article class="chapter" data-stage="0">
+                <div class="glass chapter-card">
+                    <span class="chapter-idx mono">01 / WAKE</span>
+                    <h2>清醒</h2>
+                    <p>閉上眼。後腦浮起 <b>Alpha 波 (8–13 Hz)</b>，混著零碎的 Beta。這是傅立葉最擅長的時刻——訊號還算穩定。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>高頻 IMF1–IMF2 能量最高，Alpha 被乾淨地切進 IMF3。</p>
                 </div>
-                <p>原始信號 = 所有 IMF 之和 + 最終殘餘量（趨勢項）</p>
+            </article>
+            <article class="chapter" data-stage="1">
+                <div class="glass chapter-card right">
+                    <span class="chapter-idx mono">02 / N1</span>
+                    <h2>入睡邊界</h2>
+                    <p>Alpha 崩解，<b>Theta (4–8 Hz)</b> 湧上來。這幾十秒的過渡是非穩態的教科書：頻率在滑動，而不是跳躍。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>瞬時頻率沿著 IMF3→IMF4 連續下滑——FFT 只會看到兩團模糊。</p>
+                </div>
+            </article>
+            <article class="chapter" data-stage="2">
+                <div class="glass chapter-card">
+                    <span class="chapter-idx mono">03 / N2</span>
+                    <h2>紡錘與 K 複合波</h2>
+                    <p>每隔幾秒，一串 <b>12–14 Hz 的紡錘波</b>閃過，還有一記深沉的 <b>K 複合波</b>。它們只持續 0.5–2 秒——是瞬態，不是「頻帶」。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>紡錘波被單獨隔離在一個 IMF，用 Hilbert 瞬時頻率能精確標出起訖時間 (Causa et al., 2006)。</p>
+                </div>
+            </article>
+            <article class="chapter" data-stage="3">
+                <div class="glass chapter-card right">
+                    <span class="chapter-idx mono">04 / N3</span>
+                    <h2>慢波深海</h2>
+                    <p>高振幅 <b>Delta (0.5–4 Hz)</b> 佔據一切。這是身體修復、記憶固化的時段；慢波活動 (SWA) 是「睡眠深度」的黃金指標。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>EEMD 量測的 SWA 比固定頻帶的 FFT 功率譜更靈敏 (Lo, Bartsch & Ivanov, 2018)。</p>
+                </div>
+            </article>
+            <article class="chapter" data-stage="4">
+                <div class="glass chapter-card">
+                    <span class="chapter-idx mono">05 / REM</span>
+                    <h2>夢的鋸齒</h2>
+                    <p>腦波突然變得像清醒，卻夾著 <b>鋸齒波</b>與頻率調變的 Theta。眼球快速轉動，你正在做夢。</p>
+                    <p class="chapter-emd"><span class="tag">EMD 觀察</span>各 IMF 能量分布均勻、瞬時頻率變化劇烈——正是「非線性 + 非穩態」的組合。</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- FOURIER BLIND SPOT -->
+    <section id="fourier" class="section">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>Why not Fourier?</p>
+            <h2 class="h2">傅立葉的盲點</h2>
+            <p class="lead">給兩種方法同一段「頻率從 3 Hz 滑到 24 Hz」的腦波（底下疊著一條 1.2 Hz 的 delta）。傅立葉把時間全部揉在一起，回答「有哪些頻率」；Hilbert–Huang 回答「<b>每一刻</b>是什麼頻率」。</p>
+        </div>
+        <div class="wrap duel">
+            <div class="glass duel-panel">
+                <div class="duel-head"><span class="mono">FFT · 功率譜</span><span class="pill pill-dim">時間消失了</span></div>
+                <canvas id="fft-canvas" class="duel-canvas"></canvas>
+                <p class="duel-note">一片從 3 到 24 Hz 的模糊隆起。它說得沒錯，只是什麼都沒說——你無法知道 20 Hz 出現在第幾秒。</p>
+            </div>
+            <div class="glass duel-panel">
+                <div class="duel-head"><span class="mono">HHT · 瞬時頻率</span><span class="pill pill-hot">時間被保留</span></div>
+                <canvas id="hht-canvas" class="duel-canvas"></canvas>
+                <p class="duel-note">一條清晰的斜線：頻率隨時間線性上升。這就是 EMD + Hilbert 轉換的答案。</p>
+            </div>
+        </div>
+        <div class="wrap">
+            <div class="duel-signal glass">
+                <canvas id="chirp-canvas"></canvas>
+                <span class="duel-signal-label mono">輸入訊號 · chirp 3→24 Hz + 1.2 Hz delta</span>
             </div>
         </div>
     </section>
 
-    <section id="demo" class="section">
-        <div class="container">
-            <h2 class="section-title">互動 EMD 演示</h2>
-            <p class="section-desc">調整參數觀察 EMD 如何分解模擬的睡眠 EEG 訊號。</p>
-
-            <div class="demo-controls">
-                <div class="control-group">
-                    <label>信號類型</label>
-                    <select id="signal-type">
-                        <option value="sleep-eeg">模擬睡眠 EEG</option>
-                        <option value="mixed-sine">混合正弦波</option>
-                        <option value="chirp">啁啾信號 (Chirp)</option>
-                        <option value="custom">自定義組合</option>
-                    </select>
+    <!-- SIFTING -->
+    <section id="sifting" class="section section-dark">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>The Sifting Process</p>
+            <h2 class="h2">篩選：一次一層，剝出 IMF</h2>
+            <p class="lead">EMD 沒有預設的基底函數。它只做一件事，反覆做：找極值、畫包絡、減去均值。直到剩下的東西「對稱」——那就是一個固有模態函數。</p>
+        </div>
+        <div class="wrap">
+            <div class="glass sift-stage">
+                <div class="sift-toolbar">
+                    <button class="btn btn-glow" id="sift-play" data-magnetic>▶ 播放篩選</button>
+                    <button class="btn btn-ghost" id="sift-step" data-magnetic>下一步</button>
+                    <button class="btn btn-ghost" id="sift-reset" data-magnetic>↺ 重來</button>
+                    <span class="sift-status mono" id="sift-status">待命</span>
                 </div>
-                <div class="control-group">
-                    <label>Delta 波 (0.5-4 Hz) <span id="delta-val">1.0</span></label>
-                    <input type="range" id="delta-amp" min="0" max="2" step="0.1" value="1.0">
-                </div>
-                <div class="control-group">
-                    <label>Theta 波 (4-8 Hz) <span id="theta-val">0.5</span></label>
-                    <input type="range" id="theta-amp" min="0" max="2" step="0.1" value="0.5">
-                </div>
-                <div class="control-group">
-                    <label>Alpha 波 (8-13 Hz) <span id="alpha-val">0.3</span></label>
-                    <input type="range" id="alpha-amp" min="0" max="2" step="0.1" value="0.3">
-                </div>
-                <div class="control-group">
-                    <label>紡錘波 (12-14 Hz) <span id="spindle-val">0.4</span></label>
-                    <input type="range" id="spindle-amp" min="0" max="2" step="0.1" value="0.4">
-                </div>
-                <div class="control-group">
-                    <label>雜訊強度 <span id="noise-val">0.1</span></label>
-                    <input type="range" id="noise-amp" min="0" max="0.5" step="0.05" value="0.1">
-                </div>
-                <button id="run-emd" class="btn-primary">執行 EMD 分解 ▶</button>
-                <button id="step-emd" class="btn-secondary">逐步執行</button>
-                <button id="reset-emd" class="btn-outline">重置</button>
+                <canvas id="sift-canvas"></canvas>
+                <ol class="sift-steps" id="sift-steps">
+                    <li data-phase="1"><b>01</b> 辨識所有局部極大／極小值</li>
+                    <li data-phase="2"><b>02</b> 三次樣條連接極大值 → 上包絡</li>
+                    <li data-phase="3"><b>03</b> 三次樣條連接極小值 → 下包絡</li>
+                    <li data-phase="4"><b>04</b> 取上下包絡平均 → 均值 m(t)</li>
+                    <li data-phase="5"><b>05</b> h(t) = x(t) − m(t)，檢查 IMF 條件</li>
+                </ol>
             </div>
+        </div>
+        <div class="wrap formula-strip mono">
+            <span>x(t) = Σ IMFᵢ(t) + rₙ(t)</span>
+            <span class="formula-sep">·</span>
+            <span>IMF 條件：|#極值 − #零交叉| ≤ 1，且局部均值 ≈ 0</span>
+        </div>
+    </section>
 
-            <div class="demo-charts">
-                <div class="chart-panel">
-                    <h3>原始信號</h3>
-                    <canvas id="chart-original"></canvas>
+    <!-- LAB -->
+    <section id="lab" class="section">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>Decomposition Lab</p>
+            <h2 class="h2">分解實驗室</h2>
+            <p class="lead">調配一段你自己的睡眠腦波，按下分解，看它被剝成一層層 IMF——然後<b>聽</b>它們。每個 IMF 會被映射成一個音高（×40 進入可聽範圍），振幅包絡來自 Hilbert 轉換。</p>
+        </div>
+        <div class="wrap lab">
+            <aside class="glass lab-panel">
+                <div class="lab-presets">
+                    <button class="chip" data-preset="0" data-magnetic>Wake</button>
+                    <button class="chip" data-preset="1" data-magnetic>N1</button>
+                    <button class="chip active" data-preset="2" data-magnetic>N2</button>
+                    <button class="chip" data-preset="3" data-magnetic>N3</button>
+                    <button class="chip" data-preset="4" data-magnetic>REM</button>
                 </div>
-                <div id="imf-charts"></div>
-                <div class="chart-panel" id="residue-panel" style="display:none">
-                    <h3>殘餘量 (Residue)</h3>
-                    <canvas id="chart-residue"></canvas>
+                <label class="slider"><span>Delta <em>0.5–4 Hz</em></span><input type="range" id="s-delta" min="0" max="2" step="0.05" value="0.6"><output>0.60</output></label>
+                <label class="slider"><span>Theta <em>4–8 Hz</em></span><input type="range" id="s-theta" min="0" max="2" step="0.05" value="0.6"><output>0.60</output></label>
+                <label class="slider"><span>Alpha <em>8–13 Hz</em></span><input type="range" id="s-alpha" min="0" max="2" step="0.05" value="0.1"><output>0.10</output></label>
+                <label class="slider"><span>紡錘波 σ <em>12–14 Hz</em></span><input type="range" id="s-sigma" min="0" max="2" step="0.05" value="1.0"><output>1.00</output></label>
+                <label class="slider"><span>Beta <em>13–30 Hz</em></span><input type="range" id="s-beta" min="0" max="2" step="0.05" value="0.1"><output>0.10</output></label>
+                <label class="slider"><span>雜訊</span><input type="range" id="s-noise" min="0" max="0.6" step="0.02" value="0.1"><output>0.10</output></label>
+                <div class="lab-actions">
+                    <button class="btn btn-glow" id="lab-run" data-magnetic>⟁ 分解</button>
+                    <button class="btn btn-ghost" id="lab-listen" data-magnetic>♪ 聆聽 IMF</button>
                 </div>
-            </div>
-
-            <div id="sifting-info" class="sifting-info" style="display:none">
-                <h3>篩選過程資訊</h3>
-                <div id="sifting-details"></div>
+                <p class="lab-hint">點擊任一 IMF 列可靜音／解除靜音。</p>
+                <div class="lab-stats mono" id="lab-stats"></div>
+            </aside>
+            <div class="glass lab-view">
+                <canvas id="lab-canvas"></canvas>
+                <div class="lab-tooltip mono" id="lab-tooltip"></div>
             </div>
         </div>
     </section>
 
-    <section id="sifting-demo" class="section section-alt">
-        <div class="container">
-            <h2 class="section-title">篩選過程動畫</h2>
-            <p class="section-desc">觀察單次 IMF 提取的篩選過程——極值辨識、包絡線建構與均值減除。</p>
-
-            <div class="sift-controls">
-                <button id="sift-start" class="btn-primary">開始篩選動畫 ▶</button>
-                <button id="sift-next" class="btn-secondary" disabled>下一步 →</button>
-                <button id="sift-auto" class="btn-outline">自動播放</button>
-                <span id="sift-step-label" class="step-label"></span>
-            </div>
-
-            <div class="chart-panel chart-large">
-                <canvas id="chart-sifting"></canvas>
-            </div>
-            <div id="sift-explanation" class="explanation-box"></div>
+    <!-- 3D HHT -->
+    <section id="hht3d" class="section section-dark">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>Hilbert Spectrum</p>
+            <h2 class="h2">Hilbert 譜：時間 × 頻率 × 能量</h2>
+            <p class="lead">把每個 IMF 的瞬時頻率與瞬時振幅堆疊起來，就是 Hilbert 譜。這裡用一段「從清醒滑入深睡」的 8 秒腦波：能量的山脈從高頻一路往低頻遷移。拖曳旋轉。</p>
         </div>
-    </section>
-
-    <section id="sleep" class="section">
-        <div class="container">
-            <h2 class="section-title">睡眠 EEG 分析應用</h2>
-
-            <div class="sleep-stages">
-                <h3>睡眠階段與 EEG 特徵</h3>
-                <div class="stage-grid">
-                    <div class="stage-card" data-stage="wake">
-                        <div class="stage-header wake">清醒期 (W)</div>
-                        <div class="stage-body">
-                            <p><strong>主要頻帶：</strong>Alpha (8-13 Hz)、Beta (13-30 Hz)</p>
-                            <p><strong>EMD 表現：</strong>高頻 IMF 成分佔主導，IMF1-2 能量最高</p>
-                            <canvas class="stage-chart" id="chart-wake"></canvas>
-                        </div>
-                    </div>
-                    <div class="stage-card" data-stage="n1">
-                        <div class="stage-header n1">N1 淺睡期</div>
-                        <div class="stage-body">
-                            <p><strong>主要頻帶：</strong>Theta (4-8 Hz)</p>
-                            <p><strong>EMD 表現：</strong>Alpha 減少，Theta IMF 成分增強，出現頂尖波</p>
-                            <canvas class="stage-chart" id="chart-n1"></canvas>
-                        </div>
-                    </div>
-                    <div class="stage-card" data-stage="n2">
-                        <div class="stage-header n2">N2 睡眠期</div>
-                        <div class="stage-body">
-                            <p><strong>主要頻帶：</strong>Theta + 紡錘波 (12-14 Hz) + K複合波</p>
-                            <p><strong>EMD 表現：</strong>紡錘波在特定 IMF 中清晰可辨，便於自動偵測</p>
-                            <canvas class="stage-chart" id="chart-n2"></canvas>
-                        </div>
-                    </div>
-                    <div class="stage-card" data-stage="n3">
-                        <div class="stage-header n3">N3 深睡期</div>
-                        <div class="stage-body">
-                            <p><strong>主要頻帶：</strong>Delta (0.5-4 Hz)</p>
-                            <p><strong>EMD 表現：</strong>低頻 IMF 主導，高振幅慢波在 IMF3-4 中表現突出</p>
-                            <canvas class="stage-chart" id="chart-n3"></canvas>
-                        </div>
-                    </div>
-                    <div class="stage-card" data-stage="rem">
-                        <div class="stage-header rem">REM 快速動眼期</div>
-                        <div class="stage-body">
-                            <p><strong>主要頻帶：</strong>混合頻率、鋸齒波</p>
-                            <p><strong>EMD 表現：</strong>各 IMF 能量分布較均勻，瞬時頻率變化大</p>
-                            <canvas class="stage-chart" id="chart-rem"></canvas>
-                        </div>
-                    </div>
+        <div class="wrap">
+            <div class="glass hht3d-stage">
+                <div id="hht3d-mount" class="hht3d-mount"></div>
+                <div class="hht3d-axes mono">
+                    <span class="ax ax-t">時間 →</span>
+                    <span class="ax ax-f">頻率 (Hz) →</span>
+                    <span class="ax ax-a">↑ 振幅</span>
                 </div>
-            </div>
-
-            <div class="imf-mapping">
-                <h3>IMF 與睡眠腦波頻帶對應</h3>
-                <p>當 EMD 應用於睡眠 EEG 訊號時，各 IMF 近似對應已知的腦波頻帶：</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>IMF</th>
-                            <th>近似頻帶</th>
-                            <th>睡眠中的生理意義</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>IMF1</td>
-                            <td>Gamma (30-60 Hz)</td>
-                            <td>高頻皮質活動；在 REM 和清醒時出現，與認知處理和意識相關</td>
-                        </tr>
-                        <tr>
-                            <td>IMF2</td>
-                            <td>Beta (13-30 Hz)</td>
-                            <td>活躍清醒與淺睡；隨睡眠加深而減少，與覺醒程度相關</td>
-                        </tr>
-                        <tr>
-                            <td>IMF3</td>
-                            <td>Alpha (8-13 Hz)</td>
-                            <td>放鬆清醒（閉眼）；在入睡過渡期最為突出，用於標記入睡時間</td>
-                        </tr>
-                        <tr>
-                            <td>IMF4</td>
-                            <td>Theta (4-8 Hz)</td>
-                            <td class="highlight">N1/N2 睡眠主導；包含紡錘波成分 (11-16 Hz 與 IMF3 重疊)</td>
-                        </tr>
-                        <tr>
-                            <td>IMF5</td>
-                            <td>Delta (0.5-4 Hz)</td>
-                            <td class="highlight">N3 深睡主導；Delta 波振幅和存在是睡眠深度的主要指標</td>
-                        </tr>
-                        <tr>
-                            <td>IMF6+</td>
-                            <td>Sub-delta (&lt;0.5 Hz)</td>
-                            <td>超慢振盪；與睡眠週期 (ultradian rhythm) 相關</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="hht-section">
-                <h3>Hilbert-Huang Transform (HHT) 時頻分析</h3>
-                <p>EMD 分解後，對每個 IMF 進行 Hilbert 轉換，可得到瞬時頻率和瞬時振幅，繪製高解析度的時頻譜圖。</p>
-                <div class="chart-panel chart-large">
-                    <div class="hht-controls">
-                        <label>睡眠階段模擬：</label>
-                        <select id="hht-stage">
-                            <option value="transition">睡眠階段轉換</option>
-                            <option value="spindle">N2 紡錘波</option>
-                            <option value="deep">N3 深睡</option>
-                        </select>
-                        <button id="run-hht" class="btn-secondary">生成時頻譜 ▶</button>
-                    </div>
-                    <canvas id="chart-hht"></canvas>
-                </div>
-            </div>
-
-            <div class="findings-section">
-                <h3>EMD 在睡眠研究中的關鍵發現</h3>
-                <div class="grid-2">
-                    <div class="finding-card">
-                        <h4>🔬 紡錘波自動偵測</h4>
-                        <p>EMD 能將紡錘波 (Sleep Spindles) 分離到特定 IMF 中，結合 Hilbert 轉換的瞬時頻率，可精確定位紡錘波的起始和結束時間，偵測準確率達 90% 以上 (Liang et al., 2012)。</p>
-                    </div>
-                    <div class="finding-card">
-                        <h4>📈 睡眠分期自動化</h4>
-                        <p>基於 EMD-IMF 特徵的機器學習模型，在自動睡眠分期中達到了 85-92% 的準確率，優於傳統頻帶能量特徵 (Agarwal & Gotman, 2001; Bajaj & Pachori, 2012)。</p>
-                    </div>
-                    <div class="finding-card">
-                        <h4>🏥 睡眠呼吸中止偵測</h4>
-                        <p>利用 EMD 分析 EEG 和呼吸信號，可有效偵測睡眠呼吸中止事件及其引起的微覺醒，IMF 能量變化與呼吸中止嚴重程度高度相關 (Hassan & Haque, 2016)。</p>
-                    </div>
-                    <div class="finding-card">
-                        <h4>⚡ 瞬態事件分析</h4>
-                        <p>K 複合波、頂尖波等瞬態事件在 EMD 分解中能被獨立分離，其 Hilbert 邊際譜揭示了這些事件的精確頻率組成和時間特徵 (Huang et al., 2013)。</p>
-                    </div>
+                <div class="hht3d-toolbar">
+                    <button class="chip active" data-scene="transition" data-magnetic>清醒 → 深睡</button>
+                    <button class="chip" data-scene="spindle" data-magnetic>N2 紡錘波</button>
+                    <button class="chip" data-scene="rem" data-magnetic>REM</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="papers" class="section section-alt">
-        <div class="container">
-            <h2 class="section-title">參考文獻</h2>
-            <div class="papers-list">
-                <div class="paper">
-                    <span class="paper-year">1998</span>
-                    <div class="paper-info">
-                        <h4>The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis</h4>
-                        <p class="paper-authors">Huang, N. E., Shen, Z., Long, S. R., Wu, M. C., Shih, H. H., Zheng, Q., ... & Liu, H. H.</p>
-                        <p class="paper-journal">Proceedings of the Royal Society A, 454(1971), 903-995</p>
-                        <span class="paper-tag">奠基論文</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2006</span>
-                    <div class="paper-info">
-                        <h4>Detection of Spindles in Sleep EEGs Using a Novel Algorithm Based on the Hilbert-Huang Transform</h4>
-                        <p class="paper-authors">Causa, L., Held, C. M., Estévez, J., Perez, C. A., et al.</p>
-                        <p class="paper-journal">Analysis of Biomedical Signals and Images, Springer, 478-482</p>
-                        <span class="paper-tag">紡錘波偵測</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2005</span>
-                    <div class="paper-info">
-                        <h4>Ensemble Empirical Mode Decomposition: A Noise-Assisted Data Analysis Method</h4>
-                        <p class="paper-authors">Wu, Z., & Huang, N. E.</p>
-                        <p class="paper-journal">Advances in Adaptive Data Analysis, 1(01), 1-41</p>
-                        <span class="paper-tag">EEMD 改進</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2009</span>
-                    <div class="paper-info">
-                        <h4>On instantaneous frequency</h4>
-                        <p class="paper-authors">Huang, N. E., Wu, Z., Long, S. R., Arnold, K. C., Chen, X., & Blank, K.</p>
-                        <p class="paper-journal">Advances in Adaptive Data Analysis, 1(02), 177-229</p>
-                        <span class="paper-tag">理論基礎</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2009</span>
-                    <div class="paper-info">
-                        <h4>Sleep stage classification based on EEG Hilbert-Huang transform</h4>
-                        <p class="paper-authors">Li, Y., Yingle, F., Gu, L., & Qinye, T.</p>
-                        <p class="paper-journal">4th IEEE Conference on Industrial Electronics and Applications (ICIEA), 3676-3681</p>
-                        <span class="paper-tag">睡眠分期</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2015</span>
-                    <div class="paper-info">
-                        <h4>Empirical Mode Decomposition analysis of Sleep EEG: Examining the microstructure of transient oscillatory events</h4>
-                        <p class="paper-authors">Lajnef, T., Chaibi, S., Eichenlaub, J.-B., Ruby, P. M., et al.</p>
-                        <p class="paper-journal">Conference Paper / Preprint</p>
-                        <span class="paper-tag">微結構分析</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2013</span>
-                    <div class="paper-info">
-                        <h4>A review on Hilbert-Huang transform: Method and its applications to geophysical studies</h4>
-                        <p class="paper-authors">Huang, N. E., & Wu, Z.</p>
-                        <p class="paper-journal">Reviews of Geophysics, 46(2), RG2006</p>
-                        <span class="paper-tag">綜述</span>
-                    </div>
-                </div>
-                <div class="paper">
-                    <span class="paper-year">2016</span>
-                    <div class="paper-info">
-                        <h4>Computer-aided obstructive sleep apnea detection using normal inverse Gaussian parameters and adaptive boosting</h4>
-                        <p class="paper-authors">Hassan, A. R., & Haque, M. A.</p>
-                        <p class="paper-journal">Biomedical Signal Processing and Control, 29, 22-31</p>
-                        <span class="paper-tag">睡眠呼吸中止</span>
-                    </div>
-                </div>
-            </div>
+    <!-- IMF MAP -->
+    <section id="imfmap" class="section">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>IMF ↔ Brain Rhythm</p>
+            <h2 class="h2">每一層 IMF，都是一種腦的節律</h2>
+        </div>
+        <div class="wrap imf-grid">
+            <div class="glass imf-card" style="--c: var(--imf1)"><span class="mono imf-k">IMF1</span><b>Gamma 30–60 Hz</b><p>高頻皮質活動。REM 與清醒時出現，與認知處理相關。</p></div>
+            <div class="glass imf-card" style="--c: var(--imf2)"><span class="mono imf-k">IMF2</span><b>Beta 13–30 Hz</b><p>活躍清醒與淺睡。隨睡眠加深而衰退，是覺醒程度的指標。</p></div>
+            <div class="glass imf-card" style="--c: var(--imf3)"><span class="mono imf-k">IMF3</span><b>Alpha 8–13 Hz</b><p>閉眼放鬆。在入睡過渡期最突出，用來標記入睡時刻。</p></div>
+            <div class="glass imf-card" style="--c: var(--imf4)"><span class="mono imf-k">IMF4</span><b>Theta 4–8 Hz</b><p>N1／N2 主導。紡錘波 (11–16 Hz) 常落在 IMF3–4 的交界。</p></div>
+            <div class="glass imf-card" style="--c: var(--imf5)"><span class="mono imf-k">IMF5</span><b>Delta 0.5–4 Hz</b><p>N3 深睡主導。其振幅是睡眠深度的黃金指標。</p></div>
+            <div class="glass imf-card" style="--c: var(--imf6)"><span class="mono imf-k">IMF6+</span><b>Sub-delta &lt;0.5 Hz</b><p>超慢振盪，與 90 分鐘的睡眠週期 (ultradian rhythm) 相關。</p></div>
         </div>
     </section>
 
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="section-title">關於黃鍔院士</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>黃鍔 (Norden E. Huang) 院士是 Hilbert-Huang Transform (HHT) 與經驗模態分解 (EMD) 的發明者。他於 1998 年在 NASA Goddard Space Flight Center 工作時提出了這一革命性的信號分析方法。</p>
-                    <p>EMD/HHT 方法最初用於海洋波浪分析，後廣泛應用於地震學、生醫工程、金融分析等領域。在睡眠醫學中，該方法因其對非穩態信號的優越處理能力，成為 EEG 分析的重要工具。</p>
-                    <p>黃鍔院士為中央研究院院士、美國國家工程院院士，其研究跨越物理海洋學、信號處理與生醫工程等領域，對現代非線性數據分析做出了開創性貢獻。</p>
-                </div>
-            </div>
+    <!-- PAPERS -->
+    <section id="papers" class="section section-dark">
+        <div class="wrap">
+            <p class="eyebrow"><span class="eyebrow-line"></span>References</p>
+            <h2 class="h2">文獻時間線</h2>
+            <p class="lead">從 1998 年的奠基論文到今日的自動偵測。橫向捲動。</p>
+        </div>
+        <div class="timeline" id="timeline">
+            <article class="glass paper">
+                <span class="paper-year mono">1998</span>
+                <h3>The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis</h3>
+                <p class="paper-auth">Huang, N. E., Shen, Z., Long, S. R., Wu, M. C., Shih, H. H., Zheng, Q., Yen, N.-C., Tung, C. C., & Liu, H. H.</p>
+                <p class="paper-j">Proc. R. Soc. Lond. A, 454(1971), 903–995</p>
+                <span class="tag">奠基論文</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2006</span>
+                <h3>Detection of Spindles in Sleep EEGs Using a Novel Algorithm Based on the Hilbert-Huang Transform</h3>
+                <p class="paper-auth">Causa, L., Held, C. M., Estévez, J., Perez, C. A., et al.</p>
+                <p class="paper-j">Analysis of Biomedical Signals and Images, Springer, 478–482</p>
+                <span class="tag">紡錘波偵測</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2009</span>
+                <h3>Ensemble Empirical Mode Decomposition: A Noise-Assisted Data Analysis Method</h3>
+                <p class="paper-auth">Wu, Z., & Huang, N. E.</p>
+                <p class="paper-j">Advances in Adaptive Data Analysis, 1(1), 1–41</p>
+                <span class="tag">EEMD</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2009</span>
+                <h3>Sleep stage classification based on EEG Hilbert-Huang transform</h3>
+                <p class="paper-auth">Li, Y., Yingle, F., Gu, L., & Qinye, T.</p>
+                <p class="paper-j">4th IEEE Conf. Industrial Electronics and Applications, 3676–3681</p>
+                <span class="tag">睡眠分期 · 81.7%</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2009</span>
+                <h3>On instantaneous frequency</h3>
+                <p class="paper-auth">Huang, N. E., Wu, Z., Long, S. R., Arnold, K. C., Chen, X., & Blank, K.</p>
+                <p class="paper-j">Advances in Adaptive Data Analysis, 1(2), 177–229</p>
+                <span class="tag">理論基礎</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2015</span>
+                <h3>Empirical Mode Decomposition analysis of Sleep EEG: Examining the microstructure of transient oscillatory events</h3>
+                <p class="paper-auth">Lajnef, T., Chaibi, S., Eichenlaub, J.-B., Ruby, P. M., et al.</p>
+                <p class="paper-j">Conference paper / preprint</p>
+                <span class="tag">微結構</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2018</span>
+                <h3>Complexity of Wake Electroencephalography Correlates With Slow Wave Activity After Sleep Onset</h3>
+                <p class="paper-auth">Lo, C.-C., Bartsch, R. P., & Ivanov, P. Ch.</p>
+                <p class="paper-j">Frontiers in Neuroscience, 12, 809</p>
+                <span class="tag">EEMD · 慢波</span>
+            </article>
+            <article class="glass paper">
+                <span class="paper-year mono">2024</span>
+                <h3>Automated detection of sleep spindles using a single EEG channel based TEO and EMD</h3>
+                <p class="paper-auth">Kumar, G., Rathore, S. S., & Sahoo, B.</p>
+                <p class="paper-j">Expert Systems with Applications, 123661</p>
+                <span class="tag">單通道 · 自動化</span>
+            </article>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>EMD 與睡眠研究 — 互動演算法演示網站</p>
-            <p class="footer-sub">K Lab · 陽明交通大學 · 2026</p>
+    <footer class="footer">
+        <div class="wrap footer-inner">
+            <div>
+                <p class="footer-title">一夜之旅 · EMD × Sleep</p>
+                <p class="footer-sub">黃鍔院士演講延伸 · K Lab · 陽明交通大學 · 2026</p>
+            </div>
+            <div class="footer-links">
+                <a href="classic.html" data-magnetic>經典版網站</a>
+                <a href="https://github.com/Kcegg123/emd-sleep-research" target="_blank" rel="noopener" data-magnetic>GitHub ↗</a>
+            </div>
         </div>
     </footer>
 
+    <script src="dsp.js"></script>
     <script src="emd.js"></script>
-    <script src="app.js"></script>
+    <script src="cyber.js"></script>
+    <script type="module" src="hht3d.js"></script>
 </body>
 </html>
